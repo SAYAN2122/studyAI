@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../models/user.js";
 import StudySession from "../models/StudySession.js";
 
 export const getProfile = async (req, res) => {
