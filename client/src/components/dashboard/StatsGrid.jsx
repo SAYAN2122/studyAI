@@ -10,11 +10,11 @@ import { getDashboardStats } from "../../services/dashboardService";
 
 const StatsGrid = () => {
   const [stats, setStats] = useState({
-    totalPDFs: 0,
-    totalNotes: 0,
-    totalQuizzes: 0,
-    totalFlashcards: 0,
-  });
+  totalPDFs: 0,
+  totalNotes: 0,
+  totalQuiz: 0,
+  totalFlashcards: 0,
+});
 
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +50,7 @@ const StatsGrid = () => {
     },
     {
       title: "Quizzes",
-      value: stats.totalQuizzes,
+      value: stats.totalQuiz,
       icon: FiHelpCircle,
       color: "text-green-400",
       bg: "bg-green-500/10",

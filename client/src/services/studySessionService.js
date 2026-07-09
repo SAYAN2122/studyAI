@@ -13,7 +13,7 @@ export const saveStudySession = async (sessionData) => {
 };
 
 // ==========================
-// Get All Sessions
+// Get Dashboard Sessions
 // ==========================
 export const getStudySessions = async () => {
   const response = await api.get(
@@ -24,7 +24,7 @@ export const getStudySessions = async () => {
 };
 
 // ==========================
-// Get One Session
+// Get Single Study Session
 // ==========================
 export const getStudySession = async (id) => {
   const response = await api.get(
@@ -35,11 +35,23 @@ export const getStudySession = async (id) => {
 };
 
 // ==========================
-// Delete Session
+// Delete Study Session
 // ==========================
 export const deleteStudySession = async (id) => {
   const response = await api.delete(
     `/study-session/${id}`
+  );
+
+  return response.data;
+};
+
+// ==========================
+// Update Last Opened
+// (Future Feature)
+// ==========================
+export const updateLastOpened = async (id) => {
+  const response = await api.patch(
+    `/study-session/${id}/open`
   );
 
   return response.data;

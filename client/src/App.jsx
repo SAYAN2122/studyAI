@@ -1,15 +1,21 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
-import Home from "./pages/Home";
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Signup from "./pages/Signup";
+
 import Dashboard from "./pages/Dashboard";
 import AIChat from "./pages/AIChat";
 import PDFPage from "./pages/PDFPage";
 import MyStudySessions from "./pages/MyStudySessions";
 import StudySessionDetails from "./pages/StudySessionDetails";
 import Profile from "./pages/Profile";
-
+import OAuthSuccess from "./pages/OAuthSuccess";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -17,14 +23,35 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
+        {/* ================= Public Routes ================= */}
 
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/"
+          element={<Landing />}
+        />
 
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-        {/* Protected Routes */}
+        <Route
+          path="/signup"
+          element={<Signup />}
+        />
+        <Route
+  path="/oauth-success"
+  element={<OAuthSuccess />}
+/>
+
+        {/* Redirect old register route */}
+        <Route
+          path="/register"
+          element={<Navigate to="/signup" replace />}
+        />
+
+        {/* ================= Protected Routes ================= */}
+
         <Route
           path="/dashboard"
           element={
@@ -69,14 +96,22 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
-  path="/profile"
-  element={
-    <ProtectedRoute>
-      <Profile />
-    </ProtectedRoute>
-  }
-/>
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ================= 404 ================= */}
+
+        <Route
+          path="*"
+          element={<Navigate to="/" replace />}
+        />
 
       </Routes>
     </BrowserRouter>

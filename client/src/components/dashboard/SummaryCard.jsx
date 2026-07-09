@@ -6,7 +6,6 @@ const SummaryCard = ({
   onGenerateNotes,
   onGenerateQuiz,
   onGenerateFlashcards,
-  onSaveSession,
 }) => {
   return (
     <div className="mt-8 bg-slate-800 border border-slate-700 rounded-2xl p-5 md:p-6 shadow-lg">
@@ -29,6 +28,7 @@ const SummaryCard = ({
       </div>
 
       {/* Summary */}
+
       <div className="bg-slate-900 rounded-xl p-5 border border-slate-700">
 
         <p className="whitespace-pre-wrap text-slate-300 leading-7 text-sm md:text-base">
@@ -38,7 +38,8 @@ const SummaryCard = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mt-8">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4 mt-8">
 
         <button
           onClick={onGenerateNotes}
@@ -62,28 +63,21 @@ const SummaryCard = ({
         </button>
 
         <button
-          onClick={onSaveSession}
-          className="bg-blue-600 hover:bg-blue-700 transition px-5 py-3 rounded-xl font-semibold"
-        >
-          💾 Save Session
-        </button>
-
-        <button
           onClick={() =>
             downloadTextAsPDF("AI Summary", summary)
           }
           className="bg-indigo-600 hover:bg-indigo-700 transition px-5 py-3 rounded-xl font-semibold"
         >
-          📥 Download
+          📥 Download Summary
         </button>
 
         <button
           onClick={() =>
             copyToClipboard(summary)
           }
-          className="bg-slate-700 hover:bg-slate-600 transition px-5 py-3 rounded-xl font-semibold"
+          className="bg-slate-700 hover:bg-slate-600 transition px-5 py-3 rounded-xl font-semibold sm:col-span-2"
         >
-          📋 Copy
+          📋 Copy Summary
         </button>
 
       </div>

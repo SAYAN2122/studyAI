@@ -6,8 +6,8 @@ export const getDashboardStats = async () => {
   return response.data;
 };
 
-// Study Progress
-export const getStudyProgress = async () => {
-  const response = await api.get("/dashboard/progress");
-  return response.data;
+// Recent Sessions
+export const getRecentSessions = async () => {
+  const response = await api.get("/dashboard/stats");
+  return response.data.recentSessions;
 };

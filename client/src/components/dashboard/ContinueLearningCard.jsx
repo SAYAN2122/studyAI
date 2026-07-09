@@ -29,7 +29,9 @@ const ContinueLearningCard = () => {
     fetchSession();
   }, []);
 
+  // ===============================
   // Loading Skeleton
+  // ===============================
   if (loading) {
     return (
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 animate-pulse">
@@ -46,7 +48,49 @@ const ContinueLearningCard = () => {
     );
   }
 
-  if (!session) return null;
+  // ===============================
+  // Empty State
+  // ===============================
+  if (!session) {
+    return (
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center">
+
+        <h2 className="text-2xl font-bold mb-3">
+          Continue Learning
+        </h2>
+
+        <p className="text-slate-400">
+          No study sessions found.
+        </p>
+
+        <button
+          onClick={() => navigate("/pdf")}
+          className="mt-6 bg-blue-600 hover:bg-blue-700 transition px-6 py-3 rounded-xl font-semibold"
+        >
+          Upload Your First PDF
+        </button>
+
+      </div>
+    );
+  }
+
+  // ===============================
+  // Calculate Progress
+  // ===============================
+  const completedItems = [
+    session.summary,
+    session.notes,
+    session.quiz,
+    session.flashcards,
+  ].filter((item) => {
+    if (Array.isArray(item)) {
+      return item.length > 0;
+    }
+
+    return item && item.toString().trim() !== "";
+  }).length;
+
+  const progress = Math.round((completedItems / 4) * 100);
 
   return (
     <div className="bg-gradient-to-r from-slate-900 to-slate-800 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-lg">
@@ -83,9 +127,7 @@ const ContinueLearningCard = () => {
 
             <span className="text-sm">
               Last studied on{" "}
-              {new Date(
-                session.createdAt
-              ).toLocaleString()}
+              {new Date(session.createdAt).toLocaleString()}
             </span>
 
           </div>
@@ -97,13 +139,18 @@ const ContinueLearningCard = () => {
 
               <span>Progress</span>
 
-              <span>80%</span>
+              <span>{progress}%</span>
 
             </div>
 
             <div className="w-full h-3 bg-slate-700 rounded-full overflow-hidden">
 
-              <div className="bg-blue-500 h-3 w-4/5 rounded-full"></div>
+              <div
+                className="bg-blue-500 h-3 rounded-full transition-all duration-500"
+                style={{
+                  width: `${progress}%`,
+                }}
+              ></div>
 
             </div>
 

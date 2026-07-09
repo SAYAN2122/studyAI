@@ -13,8 +13,6 @@ import {
   generateFlashcards,
 } from "../../services/pdfService";
 
-import { saveStudySession } from "../../services/studySessionService";
-
 import UploadSection from "./UploadSection";
 import SummaryCard from "./SummaryCard";
 import NotesCard from "./NotesCard";
@@ -24,7 +22,11 @@ import FlashcardsCard from "./FlashcardsCard";
 const UploadCard = () => {
   const [selectedFile, setSelectedFile] = useState(null);
 
+  // Temporary (will be removed later)
   const [pdfText, setPdfText] = useState("");
+
+  // Session created after upload
+  const [sessionId, setSessionId] = useState("");
 
   const [summary, setSummary] = useState("");
   const [notes, setNotes] = useState("");
@@ -55,19 +57,27 @@ const UploadCard = () => {
       const data = await uploadPDF(selectedFile);
 
       setSummary(data.summary);
+
+      // Temporary
       setPdfText(data.text);
+
+      // New Session ID
+      setSessionId(data.sessionId);
 
       setNotes("");
       setQuiz("");
       setFlashcards("");
+
+      showSuccess("PDF uploaded successfully!");
 
     } catch (error) {
       console.error(error);
 
       showError(
         error.response?.data?.message ||
-        "Failed to upload PDF."
+          "Failed to upload PDF."
       );
+
     } finally {
       setLoading(false);
     }
@@ -85,13 +95,23 @@ const UploadCard = () => {
     try {
       setLoading(true);
 
-      const data = await generateNotes(pdfText);
+      const data = await generateNotes(
+        sessionId,
+        pdfText
+      );
 
       setNotes(data.notes);
 
+      showSuccess("Notes generated successfully!");
+
     } catch (error) {
       console.error(error);
-      showError("Failed to generate notes.");
+
+      showError(
+        error.response?.data?.message ||
+          "Failed to generate notes."
+      );
+
     } finally {
       setLoading(false);
     }
@@ -109,13 +129,23 @@ const UploadCard = () => {
     try {
       setLoading(true);
 
-      const data = await generateQuiz(pdfText);
+      const data = await generateQuiz(
+        sessionId,
+        pdfText
+      );
 
       setQuiz(data.quiz);
 
+      showSuccess("Quiz generated successfully!");
+
     } catch (error) {
       console.error(error);
-      showError("Failed to generate quiz.");
+
+      showError(
+        error.response?.data?.message ||
+          "Failed to generate quiz."
+      );
+
     } finally {
       setLoading(false);
     }
@@ -133,47 +163,23 @@ const UploadCard = () => {
     try {
       setLoading(true);
 
-      const data = await generateFlashcards(pdfText);
+      const data = await generateFlashcards(
+        sessionId,
+        pdfText
+      );
 
       setFlashcards(data.flashcards);
 
-    } catch (error) {
-      console.error(error);
-      showError("Failed to generate flashcards.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ==========================
-  // Save Study Session
-  // ==========================
-  const handleSaveSession = async () => {
-    if (!summary) {
-      showWarning("Please upload a PDF first.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      await saveStudySession({
-        pdfName: selectedFile?.name || "Uploaded PDF",
-        summary,
-        notes,
-        quiz,
-        flashcards,
-      });
-
-      showSuccess("Study Session Saved Successfully!");
+      showSuccess("Flashcards generated successfully!");
 
     } catch (error) {
       console.error(error);
 
       showError(
         error.response?.data?.message ||
-        "Failed to save study session."
+          "Failed to generate flashcards."
       );
+
     } finally {
       setLoading(false);
     }
@@ -203,7 +209,6 @@ const UploadCard = () => {
           onGenerateNotes={handleGenerateNotes}
           onGenerateQuiz={handleGenerateQuiz}
           onGenerateFlashcards={handleGenerateFlashcards}
-          onSaveSession={handleSaveSession}
         />
       )}
 
@@ -223,6 +228,15 @@ const UploadCard = () => {
         <FlashcardsCard
           flashcards={flashcards}
         />
+      )}
+
+      {/* Temporary Debug */}
+      {sessionId && (
+        <div className="mt-6 border-t border-slate-800 pt-4">
+          <p className="text-xs text-slate-500 break-all">
+            Session ID: {sessionId}
+          </p>
+        </div>
       )}
 
     </div>

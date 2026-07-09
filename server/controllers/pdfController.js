@@ -1,6 +1,8 @@
 import fs from "fs";
 import pdf from "pdf-parse";
 
+import StudySession from "../models/StudySession.js";
+
 import {
   generatePDFSummary,
   generatePDFNotes,
@@ -10,7 +12,7 @@ import {
 } from "../services/pdfAIService.js";
 
 // ==========================================
-// Upload PDF & Generate Summary
+// Upload PDF & Create Study Session
 // ==========================================
 export const uploadPDF = async (req, res) => {
   try {
@@ -33,22 +35,39 @@ export const uploadPDF = async (req, res) => {
       });
     }
 
+    // Generate AI Summary
     const summary = await generatePDFSummary(pdfData.text);
+
+    // Create Study Session
+    const session = await StudySession.create({
+      user: req.user._id,
+      title: req.file.originalname.replace(".pdf", ""),
+      pdfName: req.file.originalname,
+      pdfUrl: req.file.path,
+      pdfText: pdfData.text,
+      summary,
+      status: "processing",
+    });
 
     return res.status(200).json({
       success: true,
+      sessionId: session._id,
       pages: pdfData.numpages,
       summary,
+
+      // Temporary (will be removed later)
       text: pdfData.text,
     });
 
   } catch (error) {
+
     console.error("Upload PDF Error:", error);
 
     return res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
 
@@ -57,6 +76,7 @@ export const uploadPDF = async (req, res) => {
 // ==========================================
 export const generateNotes = async (req, res) => {
   try {
+
     const { text } = req.body;
 
     if (!text) {
@@ -74,12 +94,14 @@ export const generateNotes = async (req, res) => {
     });
 
   } catch (error) {
+
     console.error("Generate Notes Error:", error);
 
     return res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
 
@@ -88,7 +110,8 @@ export const generateNotes = async (req, res) => {
 // ==========================================
 export const generateQuiz = async (req, res) => {
   try {
-    const { text } = req.body;
+
+    const { sessionId, text } = req.body;
 
     if (!text) {
       return res.status(400).json({
@@ -99,18 +122,29 @@ export const generateQuiz = async (req, res) => {
 
     const quiz = await generatePDFQuiz(text);
 
+    if (sessionId) {
+      await StudySession.findByIdAndUpdate(
+        sessionId,
+        {
+          quiz,
+        }
+      );
+    }
+
     return res.status(200).json({
       success: true,
       quiz,
     });
 
   } catch (error) {
-    console.error("Generate Quiz Error:", error);
+
+    console.error(error);
 
     return res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
 
@@ -119,7 +153,8 @@ export const generateQuiz = async (req, res) => {
 // ==========================================
 export const generateFlashcards = async (req, res) => {
   try {
-    const { text } = req.body;
+
+    const { sessionId, text } = req.body;
 
     if (!text) {
       return res.status(400).json({
@@ -128,7 +163,18 @@ export const generateFlashcards = async (req, res) => {
       });
     }
 
-    const flashcards = await generatePDFFlashcards(text);
+    const flashcards =
+      await generatePDFFlashcards(text);
+
+    if (sessionId) {
+      await StudySession.findByIdAndUpdate(
+        sessionId,
+        {
+          flashcards,
+          status: "completed",
+        }
+      );
+    }
 
     return res.status(200).json({
       success: true,
@@ -136,12 +182,14 @@ export const generateFlashcards = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Generate Flashcards Error:", error);
+
+    console.error(error);
 
     return res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
 
@@ -150,6 +198,7 @@ export const generateFlashcards = async (req, res) => {
 // ==========================================
 export const askPDFQuestion = async (req, res) => {
   try {
+
     const { text, question } = req.body;
 
     if (!text || !question) {
@@ -167,11 +216,13 @@ export const askPDFQuestion = async (req, res) => {
     });
 
   } catch (error) {
+
     console.error("Chat with PDF Error:", error);
 
     return res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };

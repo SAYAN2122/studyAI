@@ -18,12 +18,28 @@ const userSchema = new mongoose.Schema(
 
     password: {
       type: String,
-      required: true,
+      default: "",
     },
 
     avatar: {
       type: String,
       default: "",
+    },
+
+    googleId: {
+      type: String,
+      default: "",
+    },
+
+    githubId: {
+      type: String,
+      default: "",
+    },
+
+    provider: {
+      type: String,
+      enum: ["local", "google", "github"],
+      default: "local",
     },
   },
   {
@@ -31,4 +47,6 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("User", userSchema);
+const User = mongoose.models.User || mongoose.model("User", userSchema);
+
+export default User;

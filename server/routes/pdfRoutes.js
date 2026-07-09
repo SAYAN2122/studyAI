@@ -9,6 +9,8 @@ import {
   askPDFQuestion,
 } from "../controllers/pdfController.js";
 
+import { protect } from "../middleware/authMiddleware.js";
+
 const router = express.Router();
 
 // ==========================
@@ -30,6 +32,7 @@ const upload = multer({
 // ==========================
 router.post(
   "/upload",
+  protect,
   upload.single("pdf"),
   uploadPDF
 );
@@ -37,21 +40,37 @@ router.post(
 // ==========================
 // Generate Notes
 // ==========================
-router.post("/notes", generateNotes);
+router.post(
+  "/notes",
+  protect,
+  generateNotes
+);
 
 // ==========================
 // Generate Quiz
 // ==========================
-router.post("/quiz", generateQuiz);
+router.post(
+  "/quiz",
+  protect,
+  generateQuiz
+);
 
 // ==========================
 // Generate Flashcards
 // ==========================
-router.post("/flashcards", generateFlashcards);
+router.post(
+  "/flashcards",
+  protect,
+  generateFlashcards
+);
 
 // ==========================
 // Chat with Uploaded PDF
 // ==========================
-router.post("/chat", askPDFQuestion);
+router.post(
+  "/chat",
+  protect,
+  askPDFQuestion
+);
 
 export default router;

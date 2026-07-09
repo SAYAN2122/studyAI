@@ -1,31 +1,36 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // -------------------------------
+  // ===============================
   // State
-  // -------------------------------
+  // ===============================
+
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
-  // -------------------------------
-  // Load User & Token on Refresh
-  // -------------------------------
+  // ===============================
+  // Load User & Token
+  // ===============================
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
 
-    if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
+    if (storedToken) {
       setToken(storedToken);
+    }
+
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
-  // -------------------------------
-  // Login Function
-  // -------------------------------
+  // ===============================
+  // Login
+  // ===============================
+
   const login = (userData, jwtToken) => {
     setUser(userData);
     setToken(jwtToken);
@@ -34,15 +39,26 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("token", jwtToken);
   };
 
-  // -------------------------------
-  // Logout Function
-  // -------------------------------
-const logout = () => {
-  localStorage.clear();
+  // ===============================
+  // Update User
+  // ===============================
 
-  setUser(null);
-  setToken(null);
-};
+  const updateUser = (userData) => {
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
+
+  // ===============================
+  // Logout
+  // ===============================
+
+  const logout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
+    setUser(null);
+    setToken(null);
+  };
 
   return (
     <AuthContext.Provider
@@ -51,6 +67,7 @@ const logout = () => {
         token,
         login,
         logout,
+        updateUser,
       }}
     >
       {children}

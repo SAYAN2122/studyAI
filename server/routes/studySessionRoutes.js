@@ -4,6 +4,7 @@ import {
   saveStudySession,
   getStudySessions,
   getStudySession,
+  updateStudySession,
   deleteStudySession,
 } from "../controllers/studySessionController.js";
 
@@ -11,28 +12,45 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Save
+// ==========================================
+// Save Study Session
+// ==========================================
 router.post(
   "/save",
   protect,
   saveStudySession
 );
 
-// Get All
+// ==========================================
+// Get All Sessions
+// ==========================================
 router.get(
   "/",
   protect,
   getStudySessions
 );
 
-// Get One
+// ==========================================
+// Get One Session
+// ==========================================
 router.get(
   "/:id",
   protect,
   getStudySession
 );
 
-// Delete
+// ==========================================
+// Update Session
+// ==========================================
+router.put(
+  "/:id",
+  protect,
+  updateStudySession
+);
+
+// ==========================================
+// Delete Session
+// ==========================================
 router.delete(
   "/:id",
   protect,
