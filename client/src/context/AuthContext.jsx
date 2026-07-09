@@ -1,63 +1,36 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // ===============================
-  // State
-  // ===============================
-
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-
-  // ===============================
-  // Load User & Token
-  // ===============================
+  const [token, setToken] = useState("");
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+    const savedToken = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
 
-    if (storedToken) {
-      setToken(storedToken);
-    }
+    if (savedToken) setToken(savedToken);
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
     }
   }, []);
-
-  // ===============================
-  // Login
-  // ===============================
 
   const login = (userData, jwtToken) => {
     setUser(userData);
     setToken(jwtToken);
 
-    localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("token", jwtToken);
-  };
-
-  // ===============================
-  // Update User
-  // ===============================
-
-  const updateUser = (userData) => {
-    setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
   };
-
-  // ===============================
-  // Logout
-  // ===============================
 
   const logout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-
     setUser(null);
-    setToken(null);
+    setToken("");
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   };
 
   return (
@@ -67,7 +40,6 @@ export const AuthProvider = ({ children }) => {
         token,
         login,
         logout,
-        updateUser,
       }}
     >
       {children}
@@ -75,6 +47,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);

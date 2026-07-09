@@ -15,7 +15,7 @@ import PDFPage from "./pages/PDFPage";
 import MyStudySessions from "./pages/MyStudySessions";
 import StudySessionDetails from "./pages/StudySessionDetails";
 import Profile from "./pages/Profile";
-import OAuthSuccess from "./pages/OAuthSuccess";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -23,34 +23,20 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* ================= Public Routes ================= */}
+        {/* Public Routes */}
 
-        <Route
-          path="/"
-          element={<Landing />}
-        />
+        <Route path="/" element={<Landing />} />
 
-        <Route
-          path="/login"
-          element={<Login />}
-        />
+        <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/signup"
-          element={<Signup />}
-        />
-        <Route
-  path="/oauth-success"
-  element={<OAuthSuccess />}
-/>
+        <Route path="/signup" element={<Signup />} />
 
-        {/* Redirect old register route */}
         <Route
           path="/register"
           element={<Navigate to="/signup" replace />}
         />
 
-        {/* ================= Protected Routes ================= */}
+        {/* Protected Routes */}
 
         <Route
           path="/dashboard"
@@ -105,8 +91,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-        {/* ================= 404 ================= */}
 
         <Route
           path="*"

@@ -1,6 +1,5 @@
 import AuthLayout from "../components/auth/AuthLayout";
 import LoginForm from "../components/auth/LoginForm";
-import SocialLogin from "../components/auth/SocialLogin";
 
 function Login() {
   return (
@@ -9,8 +8,6 @@ function Login() {
       subtitle="Login to continue your AI-powered learning journey."
     >
       <LoginForm />
-
-      <SocialLogin />
     </AuthLayout>
   );
 }
