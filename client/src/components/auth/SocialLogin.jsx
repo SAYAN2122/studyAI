@@ -4,6 +4,9 @@ import { FiGithub } from "react-icons/fi";
 function SocialLogin() {
   const API_URL = import.meta.env.VITE_API_URL;
 
+  // Check if the environment variable is loaded
+  console.log("API URL =", API_URL);
+
   const handleGoogleLogin = () => {
     window.location.href = `${API_URL}/api/oauth/google`;
   };
