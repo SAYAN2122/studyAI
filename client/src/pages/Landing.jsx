@@ -11,7 +11,6 @@ import Footer from "../components/landing/Footer";
 function Landing() {
   return (
     <div className="bg-slate-950">
-
       <Navbar />
 
       <Hero />
@@ -19,13 +18,16 @@ function Landing() {
       <Features />
 
       <HowItWorks />
-<DashboardPreview />
-<WhyChooseUs />
-<FAQ />
 
-<CTA />
-<Footer />
+      <DashboardPreview />
 
+      <WhyChooseUs />
+
+      <FAQ />
+
+      <CTA />
+
+      <Footer />
     </div>
   );
 }
