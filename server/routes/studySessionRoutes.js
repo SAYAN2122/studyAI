@@ -4,7 +4,6 @@ import {
   saveStudySession,
   getStudySessions,
   getStudySession,
-  updateStudySession,
   deleteStudySession,
 } from "../controllers/studySessionController.js";
 
@@ -37,15 +36,6 @@ router.get(
   "/:id",
   protect,
   getStudySession
-);
-
-// ==========================================
-// Update Session
-// ==========================================
-router.put(
-  "/:id",
-  protect,
-  updateStudySession
 );
 
 // ==========================================
