@@ -1,24 +1,44 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
+
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
 
 // ==========================
-// Get Gemini Model
+// Helper Function
 // ==========================
-const getModel = () => {
-  const apiKey = process.env.GEMINI_API_KEY;
+const generateContent = async (prompt) => {
+  try {
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
 
-  const genAI = new GoogleGenerativeAI(apiKey);
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are StudyAI, an expert AI tutor that helps students learn efficiently using well-structured responses.",
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
 
-  return genAI.getGenerativeModel({
-    model: "gemini-2.5-flash",
-  });
+      temperature: 0.5,
+      max_tokens: 2048,
+    });
+
+    return completion.choices[0].message.content;
+  } catch (error) {
+    console.error("Groq PDF AI Error:", error);
+    throw new Error("Failed to generate AI response.");
+  }
 };
 
 // ==========================
 // Generate Summary
 // ==========================
 export const generatePDFSummary = async (pdfText) => {
-  const model = getModel();
-
   const prompt = `
 You are an AI Study Assistant.
 
@@ -35,17 +55,13 @@ Study Material:
 ${pdfText}
 `;
 
-  const result = await model.generateContent(prompt);
-
-  return result.response.text();
+  return await generateContent(prompt);
 };
 
 // ==========================
 // Generate Notes
 // ==========================
 export const generatePDFNotes = async (pdfText) => {
-  const model = getModel();
-
   const prompt = `
 You are an expert teacher.
 
@@ -63,17 +79,13 @@ Study Material:
 ${pdfText}
 `;
 
-  const result = await model.generateContent(prompt);
-
-  return result.response.text();
+  return await generateContent(prompt);
 };
 
 // ==========================
 // Generate Quiz
 // ==========================
 export const generatePDFQuiz = async (pdfText) => {
-  const model = getModel();
-
   const prompt = `
 You are an expert teacher.
 
@@ -89,17 +101,13 @@ Study Material:
 ${pdfText}
 `;
 
-  const result = await model.generateContent(prompt);
-
-  return result.response.text();
+  return await generateContent(prompt);
 };
 
 // ==========================
 // Generate Flashcards
 // ==========================
 export const generatePDFFlashcards = async (pdfText) => {
-  const model = getModel();
-
   const prompt = `
 You are an expert teacher.
 
@@ -123,23 +131,19 @@ Study Material:
 ${pdfText}
 `;
 
-  const result = await model.generateContent(prompt);
-
-  return result.response.text();
+  return await generateContent(prompt);
 };
 
 // ==========================
 // Chat with Uploaded PDF
 // ==========================
 export const chatWithPDF = async (pdfText, question) => {
-  const model = getModel();
-
   const prompt = `
 You are an AI tutor.
 
 Answer ONLY using the uploaded study material.
 
-If the answer is not present in the study material, reply:
+If the answer is not present in the study material, reply exactly:
 
 "I couldn't find that information in the uploaded PDF."
 
@@ -152,7 +156,5 @@ Question:
 ${question}
 `;
 
-  const result = await model.generateContent(prompt);
-
-  return result.response.text();
+  return await generateContent(prompt);
 };

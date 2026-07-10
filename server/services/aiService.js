@@ -1,23 +1,29 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+import groq from "../config/groq.js";
 
 export const generateAIResponse = async (prompt) => {
   try {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are StudyAI, an intelligent AI tutor. Explain concepts in a simple, beginner-friendly manner. Use headings, bullet points and examples whenever appropriate.",
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+
+      temperature: 0.7,
+      max_tokens: 1024,
     });
 
-    const result = await model.generateContent(prompt);
-
-    const response = await result.response;
-
-    return response.text();
+    return completion.choices[0].message.content;
   } catch (error) {
-    console.error("Gemini Error:", error);
-
-    throw new Error(
-      error.message || "Failed to generate AI response."
-    );
+    console.error("Groq Error:", error);
+    throw new Error(error.message || "Failed to generate AI response.");
   }
 };
