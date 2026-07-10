@@ -1,8 +1,4 @@
-import Groq from "groq-sdk";
-
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
+import groq from "../config/groq.js";
 
 // ==========================
 // Helper Function
@@ -31,7 +27,9 @@ const generateContent = async (prompt) => {
     return completion.choices[0].message.content;
   } catch (error) {
     console.error("Groq PDF AI Error:", error);
-    throw new Error("Failed to generate AI response.");
+    throw new Error(
+      error.message || "Failed to generate AI response."
+    );
   }
 };
 

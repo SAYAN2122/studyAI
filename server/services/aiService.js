@@ -9,7 +9,7 @@ export const generateAIResponse = async (prompt) => {
         {
           role: "system",
           content:
-            "You are StudyAI, an intelligent AI tutor. Explain concepts in a simple, beginner-friendly manner. Use headings, bullet points and examples whenever appropriate.",
+            "You are StudyAI, an intelligent AI tutor. Explain concepts in a simple, beginner-friendly manner. Use headings, bullet points, and examples whenever appropriate.",
         },
         {
           role: "user",
@@ -24,6 +24,8 @@ export const generateAIResponse = async (prompt) => {
     return completion.choices[0].message.content;
   } catch (error) {
     console.error("Groq Error:", error);
-    throw new Error(error.message || "Failed to generate AI response.");
+    throw new Error(
+      error.message || "Failed to generate AI response."
+    );
   }
 };

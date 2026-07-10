@@ -1,8 +1,4 @@
-import Groq from "groq-sdk";
-import dotenv from "dotenv";
-
-dotenv.config();
-
+import "dotenv/config";
 import groq from "./config/groq.js";
 
 async function test() {
@@ -16,14 +12,11 @@ async function test() {
           content: "Say Hello",
         },
       ],
-
-      temperature: 0.7,
-      max_tokens: 100,
     });
 
     console.log(completion.choices[0].message.content);
   } catch (error) {
-    console.error("Groq Test Error:", error);
+    console.error(error);
   }
 }
 
